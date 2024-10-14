@@ -10,14 +10,14 @@ import (
 
 func main() {
 	// Подключаемся к базе данных
-	conn, err := pgx.Connect(context.Background(), "postgres://username:password@localhost:5432/databasename")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:5273@localhost:5432/test")
 	if err != nil {
 		log.Fatalf("unable to connect to database: %v", err)
 	}
 	defer conn.Close(context.Background())
 
 	// Запросим данные из таблицы users
-	rows, err := conn.Query(context.Background(), "SELECT id, username, email, created_at FROM users")
+	rows, err := conn.Query(context.Background(), "SELECT id, name FROM author")
 	if err != nil {
 		log.Fatalf("query failed: %v", err)
 	}
@@ -26,15 +26,13 @@ func main() {
 	// Обрабатываем результат
 	for rows.Next() {
 		var id int
-		var username string
-		var email string
-		var createdAt string // Замените на time.Time, если хотите использовать объект времени
+		var name string
 
-		err := rows.Scan(&id, &username, &email, &createdAt)
+		err := rows.Scan(&id, &name)
 		if err != nil {
 			log.Fatalf("failed to scan row: %v", err)
 		}
-		fmt.Printf("ID: %d, Username: %s, Email: %s, Created At: %s\n", id, username, email, createdAt)
+		fmt.Printf("ID: %d, name: %s\n", id, name)
 	}
 
 	if err := rows.Err(); err != nil {
